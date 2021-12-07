@@ -15,10 +15,11 @@ namespace MovieLibraryDatabase
             do
             {
                 Console.WriteLine("1) Search Movie by title.");
-                Console.WriteLine("2) Add a movie to the database");
-                Console.WriteLine("3) Add a user to the database");
-                Console.WriteLine("4) Change a Movie's title");
-                Console.WriteLine("5) Delete a movie from the database");
+                Console.WriteLine("2) Display all movies");
+                Console.WriteLine("3) Add a movie to the database");
+                Console.WriteLine("4) Add a user to the database");
+                Console.WriteLine("5) Change a Movie's title");
+                Console.WriteLine("6) Delete a movie from the database");
                 Console.WriteLine("Enter any other key to exit.");
                 choice = Console.ReadLine();
                 if (choice == "1")
@@ -29,11 +30,20 @@ namespace MovieLibraryDatabase
                 }
                 else if (choice == "2")
                 {
+                    using(var db = new MovieContext()){
+                        foreach (var m in db.Movies)
+                        {
+                            Console.WriteLine($"Movie {m.Id}: {m.Title}, {m.ReleaseDate}");
+                        }
+                    }
+                }
+                else if (choice == "3")
+                {
                     Console.WriteLine("Enter the movie title");
                     string input = Console.ReadLine();
                     appMan.AddMovie(input);
                 }
-                else if (choice == "3")
+                else if (choice == "4")
                 {
                     string gender;
                     string occ;
@@ -76,7 +86,7 @@ namespace MovieLibraryDatabase
 
                     appMan.AddUser(age, gender, zip, occ);
                 }
-                else if (choice == "4")
+                else if (choice == "5")
                 {
                     Console.WriteLine("Enter movie title to change");
                     string input = Console.ReadLine();
@@ -85,7 +95,7 @@ namespace MovieLibraryDatabase
 
                     appMan.UpdateMovie(input, change);
                 }
-                else if (choice == "5")
+                else if (choice == "6")
                 {
                     Console.WriteLine("Enter movie title to delete");
                     string input = Console.ReadLine();
