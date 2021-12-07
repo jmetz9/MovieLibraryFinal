@@ -44,6 +44,23 @@ namespace MovieLibraryDatabase
             }
         }
 
+        public void AddUser(long age, string gender, string zip, string occ){
+            using (var db = new MovieContext())
+            {
+                var user = new User
+                {
+                    Age = age,
+                    Gender = gender,
+                    ZipCode = zip,
+                    Occupation = db.Occupations.FirstOrDefault(x => x.Name == occ)
+                };
+                db.Users.Add(user);
+                db.SaveChanges();
+
+                Console.WriteLine($"User added successfully: #{user.Id}, Age:{user.Age}, {user.Gender}, Zip:{user.ZipCode}, Occ:{user.Occupation.Name}");
+            }
+        }
+
         public void UpdateMovie(string title, string updateTo)
         {
             using (var db = new MovieContext())

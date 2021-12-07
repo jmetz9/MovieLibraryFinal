@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using MovieLibraryDatabase.Context;
+using MovieLibraryDatabase.DataModels;
 
 namespace MovieLibraryDatabase
 {
@@ -8,14 +10,15 @@ namespace MovieLibraryDatabase
         static void Main(string[] args)
         {
             AppManager appMan = new AppManager();
-            
+
             string choice;
             do
             {
                 Console.WriteLine("1) Search Movie by title.");
                 Console.WriteLine("2) Add a movie to the database");
-                Console.WriteLine("3) Change a Movie's title");
-                Console.WriteLine("4) Delete a movie from the database");
+                Console.WriteLine("3) Add a user to the database");
+                Console.WriteLine("4) Change a Movie's title");
+                Console.WriteLine("5) Delete a movie from the database");
                 Console.WriteLine("Enter any other key to exit.");
                 choice = Console.ReadLine();
                 if (choice == "1")
@@ -32,6 +35,49 @@ namespace MovieLibraryDatabase
                 }
                 else if (choice == "3")
                 {
+                    string gender;
+                    string occ;
+                    Console.WriteLine("Enter the user's age");
+                    //tried doing try/catch block but it would just say "The build failed. Fix the build errors and run again." 
+                    //without telling me what the errors were so I'm stumped
+                    long age = long.Parse(Console.ReadLine());
+                    do
+                    {
+                        Console.WriteLine("Enter the user's gender. (M)ale, (F)emale");
+                        gender = Console.ReadLine().ToUpper();
+
+                    } while (gender != "M" && gender != "F");
+
+                    Console.WriteLine("Enter the user's zipcode");
+                    string zip = Console.ReadLine();
+
+
+                    bool exists = false;
+                    do
+                    {
+                        using (var db = new MovieContext())
+                        {
+                            foreach (var o in db.Occupations)
+                            {
+                                Console.WriteLine($"{o.Name}");
+                            }
+
+                            Console.WriteLine("From the selection above, choose the user's occupation");
+                            occ = Console.ReadLine();
+                            foreach (var o in db.Occupations)
+                            {
+                                if (o.Name.ToLower() == occ.ToLower())
+                                {
+                                    exists = true;
+                                }
+                            }
+                        }
+                    }while(!exists);
+
+                    appMan.AddUser(age, gender, zip, occ);
+                }
+                else if (choice == "4")
+                {
                     Console.WriteLine("Enter movie title to change");
                     string input = Console.ReadLine();
                     Console.WriteLine("What would you like to change it to?");
@@ -39,7 +85,7 @@ namespace MovieLibraryDatabase
 
                     appMan.UpdateMovie(input, change);
                 }
-                else if (choice == "4")
+                else if (choice == "5")
                 {
                     Console.WriteLine("Enter movie title to delete");
                     string input = Console.ReadLine();
